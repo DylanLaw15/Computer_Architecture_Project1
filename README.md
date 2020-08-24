@@ -1,6 +1,6 @@
 # Computer Architecture Project1
-### Stack Overflow in Recursive Functions (Fibonacci)
-#### So what is a Stack overflow?
+## Stack Overflow in Recursive Functions (Fibonacci)
+### So what is a Stack overflow?
 [Techtarget](https://whatis.techtarget.com/definition/stack-overflow) defines a stack overflow as:
 > A stack overflow is an undesirable condition in which a particular computer program tries to use more memory space than the call stack has available.
 
@@ -51,4 +51,20 @@ Now run the binary with a large number:
 ![Seg Fault](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/seg_fault.png)
 
 As you can see we get a segmentation fault, meaning our process is trying to access memory it does not have permission to.
+
+### Now for the fun part, why and how did this happen?
+
+We will be using gdb with the gdb-peda plugin (just becuase I am used to using it) to debug this program!
+
+Lets load the binary into gdb and disassemble the fibonacci function:
+
+![fibonacci_disass](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/fibonacci_disassembly.png)
+
+Lets break down what is happening in the fibonacci function:
+
+1. Function Prologue
+2. Passing in the argument to fibonacci function
+3. Logic to return based on if n is 0 or 1
+4. Calling fibonacci on n-1 and n-2
+5. Function Epilogue
 
