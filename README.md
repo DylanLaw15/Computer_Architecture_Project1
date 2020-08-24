@@ -39,12 +39,16 @@ int main() {
 Compile the code with `gcc Fibonacci.c -o Fibonacci` then mark as executable with `chmod +x Fibonacci`
 
 Run with small managble numbers:
+
 ![Regular Output](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/regular_output.png)
 
 On a Windows system the default stack size (depending on compiler) is usually 1MB, which is alot less than the relatively huge default stack size of 8MB on a linux system. Now for demonstrastration purposes I will decrease the stack size from 8MB to 128KB (So we can cause stack overflow easier)
+
 ![Decrease Size of Stack](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/changing_stack_size.png)
 
 Now run the binary with a large number:
+
 ![Seg Fault](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/seg_fault.png)
+
 As you can see we get a segmentation fault, meaning our process is trying to access memory it does not have permission to.
 
