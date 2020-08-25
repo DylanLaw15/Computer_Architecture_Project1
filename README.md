@@ -11,7 +11,7 @@ We can observe this through the C implementation of a Fibonacci calculator.
 ![file command](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/file.png)
 
 Here is the code (Fibonacci.c):
-```
+```c
 #include <stdio.h>
 
 int fibonacci(int n) {
@@ -116,7 +116,7 @@ Analyzing the top of the stack:
 Since I implemented fibonacci recursivly instead of iterativly, each call to fibonacci() is calling fibonacci() again, so each function is creating a new stack frame, and since none of the functions return (because they are still calling themselves), none of the stack frames are deleted from the stack. So new frames are created until the stack is full.
 
 We can see that the first call to fibonacci(), from main, never returns by adding a printf() to our main function after the call to fibonacci() and before return (Fibonacci_no_return.c)
-```
+```c
   
 #include <stdio.h>
 
