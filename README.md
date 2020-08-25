@@ -8,7 +8,7 @@ We can observe this through the C implementation of a Fibonacci calculator.
 
 ***All programming and debugging is done on a linux system, so the binaries will be compiled for a linux system (ELF)***
 
-Here is the code:
+Here is the code (Fibonacci.c):
 ```
 #include <stdio.h>
 
@@ -104,8 +104,48 @@ Analyzing the top of the stack:
    - The fourth QWORD is 0x00001cc400000000, this isn't actually a QWORD, but instead a two DWORDs (32 bits/4 bytes). That first DWORD 0x00001cc4 is actually the argument passed to the fibonacci function (0x00001cc4 == 7364 in decimal) through RDI. So in this stack frame we are on the 2636th call to fibonacci, nearing the end of the stack, which we know happens at 2640 calls
    - The sixth QWORD is 0x0000555555555178 which is the return address. This is pushed onto the stack during the `call   0x555555555145 <fibonacci>`. Since we are calling the fibonacci function again, a new stack frame is created.
      - Mabye you noticed, I said that the return address is push onto the stack during the `call   0x555555555145 <fibonacci>`, but that's not a push right? So how is something getting pushed onto the stack. Well on the x86_64 architecture. The call instruction is actually 2 instructions `push $RIP;    jmp <address>`. The RIP is the pointer to the next instruction to be executed. 
+   - Let's do some quick math: each stack frame is 0x30bytes in size, and there are 2640 of them, so 0x30 * 2640 = 126720bytes. 126720/1024 = 123KB. So there are 128KB-123KB (5KB) of stack space not allocated to the fibonacci stack frames, where did they go? Well there are other things on the stack including main's stack frame, \__libc_start_main's stack frame, start's stack frame (which we can see in the backtrace), as well as arguments passed to the program, enviroment variables, ...
 5. The command `x/2i 0x00005555555173` will output the instruction (plus the one before) of the return pointer that we see was pushed onto the end of each stack frame. So as you can see the return pointer is pushed onto the stack so that after the function returns, we can continue execution from where we left off.
 
 
 ### Sum it up
 
+Since I implemented fibonacci recursivly instead of iterativly, each call to fibonacci is calling fibonacci again, so each function is creating a new stack frame, and since none of the functions return (becuase they are still calling themselves), none of the stack frames are deleted from the stack. So new frames are created until the stack is full.
+
+We can see that the first call to fibonacci from main never returns by adding a printf() to our main function after the call to fibonacci() and before return (Fibonacci_no_return.c)
+```
+  
+#include <stdio.h>
+
+int fibonacci(int n) {
+   if(n == 0){
+      return 0;
+   } else if(n == 1) {
+      return 1;
+   } else {
+      return (fibonacci(n-1) + fibonacci(n-2));
+   }
+}
+
+int main() {
+   int n;
+
+   /*Getting user input*/
+   printf("Enter a number to find to find Nth fibonacci term: ");
+   scanf("%d", &n);
+	
+   /*Calculate fibonacci term of number given by user, then print it*/
+   printf("Fibonacci of %d: " , n);
+   printf("%d \n",fibonacci(n));
+
+   /*Print message if the recursive fibonacci has returned to main */
+   printf("I have returned to main!\n");
+   return 0;
+}
+```
+
+Then compile and run it causing a seg fault:
+
+![no return](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/no_return.png)
+
+As you can see, the program Seg faults before `printf("I have returned to main!\n");` has a chance to be called, becuase fibonacci never returns to main.
