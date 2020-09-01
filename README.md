@@ -153,7 +153,7 @@ Then compile and run it causing a seg fault:
 
 As you can see, the program Seg faults before `printf("I have returned to main!\n");` has a chance to be called, becuase fibonacci() never returns to main.
 
-##The Problem With Floating Point Numbers(part 2)
+## The Problem With Floating Point Numbers(part 2)
 
 So now for the second part of the project, we're gonna show how computers have trouble with declaring floating point numbers.  When you're building your programs, some things can really slip your mind when working with all of these algorithms and numbers, and one of these things that you must keep in mind are floats (especially when comparing two float numbers).  
 
@@ -166,12 +166,7 @@ According to [bitbashing](https://bitbashing.io/comparing-floats.html#:~:text=Si
 Now let's demonstrate how computers have trouble with this concept.
 This Java program has 100 different cases where equivalency is checked using floating point numbers.
 
-'''java
-
-package computerArchProj;
-
-import java.text.DecimalFormat;
-import java.util.*; 
+'''
 
 public class Float {
 
