@@ -166,7 +166,7 @@ According to [bitbashing](https://bitbashing.io/comparing-floats.html#:~:text=Si
 Now let's demonstrate how computers have trouble with this concept.
 This Java program has 100 different cases where equivalency is checked using floating point numbers.
 
-'''
+```java
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -234,7 +234,7 @@ This Java program has 100 different cases where equivalency is checked using flo
 	}
 
 }
-'''
+```
 
 Step by step, what this program does is
 
@@ -255,6 +255,3 @@ Now lets perform the arithmetic.
 ![checkValues](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/checkValues.png)
 
 As you can see, these numbers, although equal in real life, are not equal at all to a computer!  The first equation has an extra digit!  And this case happens about 1/5 times when checking equivalency.
-
-
-
