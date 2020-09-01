@@ -152,3 +152,112 @@ Then compile and run it causing a seg fault:
 ![no return](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/no_return.png)
 
 As you can see, the program Seg faults before `printf("I have returned to main!\n");` has a chance to be called, becuase fibonacci() never returns to main.
+
+##The Problem With Floating Point Numbers(part 2)
+
+So now for the second part of the project, we're gonna show how computers have trouble with declaring floating point numbers.  When you're building your programs, some things can really slip your mind when working with all of these algorithms and numbers, and one of these things that you must keep in mind are floats (especially when comparing two float numbers).  
+
+According to [bitbashing](https://bitbashing.io/comparing-floats.html#:~:text=Since%20the%20result%20of%20every,produce%20a%20different%20result%20than),
+> Since the result of every floating-point operation must be rounded to the nearest possible value, math doesn’t behave like it does with real numbers. Depending on your        > hardware, compiler, and compiler flags, 0.1 \times 100.1×10 may produce a different result than \sum_{n=1}^{10} 0.1∑
+> ​n=1
+> ​10
+> ​​ 0.1.1 Whenever we compare calculated values to each other, we should provide some leeway to account for this. Comparing their exact values with == won’t cut it.
+
+Now let's demonstrate how computers have trouble with this concept.
+This Java program has 100 different cases where equivalency is checked using floating point numbers.
+
+'''java
+
+package computerArchProj;
+
+import java.text.DecimalFormat;
+import java.util.*; 
+
+public class Float {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		Random ran = new Random();
+		
+		//a+(b+c) == (a+b)+c
+		//we are checking this 100 times
+		
+		float a = 0, b = 0, c = 0;
+		int i = 0, t = 0, f = 0;
+		boolean yesOrNo = false;
+		
+		while(i < 100) {
+			
+			a = ran.nextFloat();
+			b = ran.nextFloat();
+			c = ran.nextFloat();
+			yesOrNo = check(a,b,c);
+			System.out.println(yesOrNo + "\n");
+			if(yesOrNo) {
+				t++;
+			}
+			else if(!yesOrNo) {
+				f++;
+			}
+			i++;
+		}
+	
+		percentage(t,f);
+	
+	}
+	
+	
+	
+	//checking if the condition is true between the two math equations
+	public static boolean check(float a, float b, float c) {
+		
+		
+		float num1 = a + (b + c);
+		float num2 = (a + b) + c;
+		
+		System.out.println("First Expression = " + num1 + "\nSecond Expression = " + num2);
+	
+		if(num1 == num2){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	//finding the percentage of true conditions
+	public static void percentage(int t, int f) {
+		
+	double num = 0;
+	System.out.println("Number of true conditions = " + t + "\nNumber of false conditions = " + f);
+	
+	num = ((double) f / (double) t) * 100;
+	//rounding
+	DecimalFormat df = new DecimalFormat("#.##");      
+	num = Double.valueOf(df.format(num));
+	
+	System.out.println("Condition is false about " + num + "% percent of the time.");
+	}
+
+}
+'''
+
+Step by step, what this program does is
+
+1. Call Random java class to create random floating point numbers
+2. Run the check() function, which will check the equivalency of two math equations: "a+(b+c)" and "(a+b)+c"
+3. Rense and repeat 100 times, using different floating point numbers after each check
+4. Finally, it will output the percentage of equivalency checks that failed.
+
+One thing to note is that the higher number of checks we do, the percentage will usually creep toward about a little over 20% failure for the equivalency check.
+The reason we get this equivalency check is because when we use these expressions to add and change up the order of operations, the computer tries to round these floating point values, and sometimes the number is not always the same after rounding and when you start putting that float into this arithmetic ((a+b)+c or a+(b+c)).
+
+Here we can see that the float values have been declared a, b, c with random float values.  Note the number of digits that represent these values.  This is what can cause errors when doing arithmetic/rounding.
+
+Now lets perform the arithmetic.
+
+As you can see, these numbers, although equal in real life, are not equal at all to a computer!  The first equation has an extra digit!  And this case happens about 1/5 times when checking equivalency.
+
+
+
