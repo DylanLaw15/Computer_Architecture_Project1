@@ -168,8 +168,6 @@ This Java program has 100 different cases where equivalency is checked using flo
 
 '''
 
-public class Float {
-
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
