@@ -253,9 +253,13 @@ Step by step, what this program does is
 One thing to note is that the higher number of checks we do, the percentage will usually creep toward about a little over 20% failure for the equivalency check.
 The reason we get this equivalency check is because when we use these expressions to add and change up the order of operations, the computer tries to round these floating point values, and sometimes the number is not always the same after rounding and when you start putting that float into this arithmetic ((a+b)+c or a+(b+c)).
 
+![floatValues](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/floatValues.jpg)
+
 Here we can see that the float values have been declared a, b, c with random float values.  Note the number of digits that represent these values.  This is what can cause errors when doing arithmetic/rounding.
 
 Now lets perform the arithmetic.
+
+![checkValues](https://github.com/DylanLaw15/Computer_Architecture_Project1/blob/master/Pictures/checkValues.png)
 
 As you can see, these numbers, although equal in real life, are not equal at all to a computer!  The first equation has an extra digit!  And this case happens about 1/5 times when checking equivalency.
 
