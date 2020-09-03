@@ -97,15 +97,15 @@ Let's look at the top of the stack after it seg faulted.
 
 Analyzing the top of the stack:
 
-1. The command `x/30x $sp+0x10` will show the top 30 quad words or QWORDS (64 bits/8 bytes) on the stack.
+1. The command `x/30x $sp+0x10` will show the top 30 words (64 bits/8 bytes) on the stack.
    - We are examining "$sp+0x10" because if you recall the stack pointer was pointing into invalid memory (stack -0x10) when the process seg faulted.
 2. The top of the stacks virtual memory segment.
 3. As you can see I highlighted each stack frame (except for the bottom partial stack frame, becuase I ran out of highlight colors and didn't want to confuse anyone)
 4. This is a single stack frame.
-   - The first QWORD is 0x00007ffffffdf100 which is the saved RBP. This is pushed onto the stack in the first instruction in the prologue of functions `push   rbp`. The "saved RBP" is the address of the beggining of the previous stack frame.
-   - The fourth QWORD is 0x00001cc400000000, this isn't actually a QWORD, but instead two DWORDs (32 bits/4 bytes). That first DWORD 0x00001cc4 is actually the argument passed to the fibonacci function (0x00001cc4 == 7364 in decimal) through RDI. So in this stack frame we are on the 2636th call to fibonacci(), nearing the end of the stack, which we know happens at 2640 calls to fibonacci()
-     - The argument pushed onto the stack through RDI (0x00001cc4 or 7364) is a DWORD becuase in our main function we declared "n" as an int. Which takes up 4 bytes (DWORD).
-   - The sixth QWORD is 0x0000555555555178 which is the return address. This is pushed onto the stack during the `call   0x555555555145 <fibonacci>`. Since we are calling the fibonacci function again, a new stack frame is created.
+   - The first WORD is 0x00007ffffffdf100 which is the saved RBP. This is pushed onto the stack in the first instruction in the prologue of functions `push   rbp`. The "saved RBP" is the address of the beggining of the previous stack frame.
+   - The fourth WORD is 0x00001cc400000000, this isn't actually a WORD, but instead two half WORDs (32 bits/4 bytes). That first half WORD 0x00001cc4 is actually the argument passed to the fibonacci function (0x00001cc4 == 7364 in decimal) through RDI. So in this stack frame we are on the 2636th call to fibonacci(), nearing the end of the stack, which we know happens at 2640 calls to fibonacci()
+     - The argument pushed onto the stack through RDI (0x00001cc4 or 7364) is a half WORD becuase in our main function we declared "n" as an int. Which takes up 4 bytes (half WORD).
+   - The sixth WORD is 0x0000555555555178 which is the return address. This is pushed onto the stack during the `call   0x555555555145 <fibonacci>`. Since we are calling the fibonacci function again, a new stack frame is created.
      - Mabye you noticed, I said that the return address is push onto the stack during the `call   0x555555555145 <fibonacci>`, but that's not a push right? So how is something getting pushed onto the stack. Well on the [Intel x86 architecture](https://en.wikipedia.org/wiki/X86), the "call" instruction is actually 2 instructions `push $RIP;    jmp <address>`. The RIP is the pointer to the next instruction to be executed. 
    - Let's do some quick math: each stack frame is 0x30bytes in size, and there are 2640 of them, so 0x30 * 2640 = 126720bytes. 126720/1024 = 123KB. So there are 128KB-123KB (5KB) of stack space not allocated to the fibonacci() stack frames, where did they go? Well there are other things on the stack including main's stack frame, \__libc_start_main's stack frame, start's stack frame (which we can see in the backtrace), as well as arguments passed to the program, enviroment variables, ...
 5. The command `x/2i 0x00005555555173` will output the instruction (plus the one before) of the return pointer that we see was pushed onto the end of each stack frame. So as you can see the return pointer is pushed onto the stack so that after the function returns, we can continue execution from where we left off.
